@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libexpat1-dev \
         gettext \
         unzip \
+	python3.6 \
         python3-setuptools \
         python3-pip \
         python3-dev \
