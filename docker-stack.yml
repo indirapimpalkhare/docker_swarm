@@ -24,7 +24,7 @@ services:
       # volumes:
       #   - api-data:/docker_api
       ports:
-        - "8000:8000"
+        - "7000:8000"
       networks:
         - backend
       depends_on:
@@ -36,13 +36,6 @@ services:
           parallelism: 2
         restart_policy:
           condition: on-failure
-  nginx:
-    image : nginx
-    build: ./nginx
-    ports:
-      - 8000:80
-    depends_on:
-      - web
 
   visualizer:
     image: dockersamples/visualizer:stable
