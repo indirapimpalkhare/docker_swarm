@@ -37,6 +37,7 @@ services:
         restart_policy:
           condition: on-failure
   nginx:
+    image : nginx
     build: ./nginx
     ports:
       - 8000:80
