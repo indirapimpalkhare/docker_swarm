@@ -1,0 +1,62 @@
+version: "3.6"
+services:
+
+  db:
+    image: postgres:11.5-alpine
+    env_file: .env-db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+        - "5432:5432"
+    networks:
+      - backend
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+
+  web:
+      image: indirapimpalkhare/django_calculator 
+      # volumes:
+      #   - api-data:/docker_api
+      ports:
+        - "8000:8000"
+      networks:
+        - backend
+      depends_on:
+        - db
+      env_file: .env
+      deploy:
+        replicas: 10
+        update_config:
+          parallelism: 2
+        restart_policy:
+          condition: on-failure
+  nginx:
+    build: ./nginx
+    ports:
+      - 8000:80
+    depends_on:
+      - web
+
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    stop_grace_period: 1m30s
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  backend:
+
+volumes:
+  db-data:
+  # api-data:
